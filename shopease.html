@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopEase — Modern Shopping</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #0d0d0d;
+      --cream: #f5f0e8;
+      --accent: #e84c1e;
+      --muted: #888;
+      --card-bg: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+    h1,h2,h3,h4,h5 { font-family: 'Clash Display', sans-serif; }
+
+    /* ── NAVBAR ── */
+    .navbar { background: var(--ink); padding: 18px 40px; position: sticky; top: 0; z-index: 999; }
+    .navbar-brand { font-family: 'Clash Display', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cream) !important; letter-spacing: -1px; }
+    .navbar-brand span { color: var(--accent); }
+    .nav-link { color: rgba(255,255,255,0.7) !important; font-size: 0.9rem; letter-spacing: 0.5px; transition: color .2s; }
+    .nav-link:hover { color: var(--cream) !important; }
+    .cart-btn { background: var(--accent); color: #fff; border: none; border-radius: 50px; padding: 8px 20px; font-family: 'DM Sans'; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: opacity .2s; }
+    .cart-btn:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero { min-height: 88vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 60px 80px; gap: 40px; background: var(--ink); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; right: -100px; top: -100px; width: 500px; height: 500px; border-radius: 50%; background: var(--accent); opacity: 0.08; }
+    .hero-tag { background: var(--accent); color: #fff; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; padding: 6px 14px; border-radius: 50px; display: inline-block; margin-bottom: 20px; }
+    .hero-title { font-size: clamp(3rem, 5vw, 5rem); font-weight: 700; color: var(--cream); line-height: 1.05; letter-spacing: -2px; margin-bottom: 20px; }
+    .hero-title em { color: var(--accent); font-style: normal; }
+    .hero-sub { color: rgba(245,240,232,0.55); font-size: 1.05rem; line-height: 1.7; max-width: 440px; margin-bottom: 36px; }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary-custom { background: var(--accent); color: #fff; border: none; border-radius: 50px; padding: 14px 32px; font-family: 'Clash Display', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform .2s, box-shadow .2s; text-decoration: none; display: inline-block; }
+    .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,76,30,0.4); color: #fff; }
+    .btn-outline-custom { background: transparent; color: var(--cream); border: 1.5px solid rgba(245,240,232,0.3); border-radius: 50px; padding: 14px 32px; font-family: 'Clash Display', sans-serif; font-size: 1rem; cursor: pointer; transition: border-color .2s; text-decoration: none; display: inline-block; }
+    .btn-outline-custom:hover { border-color: var(--cream); color: var(--cream); }
+    .hero-stats { display: flex; gap: 40px; margin-top: 48px; }
+    .stat-num { font-family: 'Clash Display', sans-serif; font-size: 2rem; font-weight: 700; color: var(--cream); }
+    .stat-label { font-size: 0.8rem; color: rgba(245,240,232,0.5); text-transform: uppercase; letter-spacing: 1px; }
+    .hero-image-side { display: flex; justify-content: center; align-items: center; position: relative; }
+    .hero-img-card { background: #1a1a1a; border-radius: 24px; padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; width: 340px; border: 1px solid rgba(255,255,255,0.06); }
+    .hero-product-img { font-size: 120px; line-height: 1; }
+    .hero-img-card h3 { color: var(--cream); font-size: 1.3rem; text-align: center; }
+    .hero-img-card .price { font-size: 1.8rem; font-weight: 700; color: var(--accent); font-family: 'Clash Display', sans-serif; }
+    .floating-badge { position: absolute; background: var(--cream); border-radius: 12px; padding: 10px 16px; font-size: 0.8rem; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .floating-badge.top { top: 30px; left: -20px; }
+    .floating-badge.bottom { bottom: 30px; right: -20px; color: var(--accent); }
+
+    /* ── CATEGORIES ── */
+    .section-pad { padding: 80px 80px; }
+    .section-title { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 8px; }
+    .section-sub { color: var(--muted); margin-bottom: 40px; }
+    .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .cat-card { background: var(--ink); border-radius: 20px; padding: 32px 24px; text-align: center; cursor: pointer; transition: transform .25s, background .25s; position: relative; overflow: hidden; }
+    .cat-card:hover { transform: translateY(-6px); background: #1a1a1a; }
+    .cat-icon { font-size: 3rem; margin-bottom: 14px; }
+    .cat-card h5 { color: var(--cream); font-size: 1rem; margin-bottom: 4px; }
+    .cat-card small { color: var(--muted); font-size: 0.8rem; }
+
+    /* ── PRODUCTS ── */
+    .products-section { background: #fff; }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 36px; flex-wrap: wrap; }
+    .filter-btn { background: transparent; border: 1.5px solid #e0e0e0; border-radius: 50px; padding: 8px 20px; font-size: 0.85rem; cursor: pointer; transition: all .2s; font-family: 'DM Sans'; color: var(--ink); }
+    .filter-btn.active, .filter-btn:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .product-card { border-radius: 20px; overflow: hidden; background: var(--cream); border: 1px solid #ede8df; transition: transform .25s, box-shadow .25s; cursor: pointer; }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(13,13,13,0.1); }
+    .product-img { background: #e8e2d8; height: 220px; display: flex; align-items: center; justify-content: center; font-size: 80px; position: relative; }
+    .badge-new { position: absolute; top: 14px; left: 14px; background: var(--accent); color: #fff; font-size: 0.7rem; padding: 4px 10px; border-radius: 50px; letter-spacing: 1px; text-transform: uppercase; }
+    .badge-sale { position: absolute; top: 14px; left: 14px; background: #22a86b; color: #fff; font-size: 0.7rem; padding: 4px 10px; border-radius: 50px; letter-spacing: 1px; text-transform: uppercase; }
+    .wishlist-btn { position: absolute; top: 14px; right: 14px; background: #fff; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; transition: transform .2s; }
+    .wishlist-btn:hover { transform: scale(1.1); }
+    .product-info { padding: 18px 20px; }
+    .product-brand { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .product-name { font-size: 1rem; font-weight: 600; margin-bottom: 8px; font-family: 'Clash Display', sans-serif; }
+    .product-rating { color: #f59e0b; font-size: 0.8rem; margin-bottom: 10px; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: 'Clash Display', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--ink); }
+    .product-price .old { font-size: 0.85rem; color: var(--muted); text-decoration: line-through; margin-left: 6px; font-family: 'DM Sans'; font-weight: 400; }
+    .add-btn { background: var(--ink); color: var(--cream); border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 1.1rem; cursor: pointer; transition: background .2s, transform .2s; display: flex; align-items: center; justify-content: center; }
+    .add-btn:hover { background: var(--accent); transform: rotate(90deg); }
+
+    /* ── BANNER ── */
+    .promo-banner { background: var(--accent); padding: 80px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; }
+    .promo-banner h2 { font-size: 3rem; font-weight: 700; color: #fff; letter-spacing: -1px; line-height: 1.1; }
+    .promo-banner p { color: rgba(255,255,255,0.8); font-size: 1.05rem; line-height: 1.7; margin-bottom: 28px; }
+    .btn-white { background: #fff; color: var(--accent); border: none; border-radius: 50px; padding: 14px 32px; font-family: 'Clash Display', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: transform .2s; }
+    .btn-white:hover { transform: translateY(-2px); color: var(--accent); }
+    .promo-right { display: flex; justify-content: center; gap: 20px; }
+    .promo-item { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 24px; text-align: center; color: #fff; }
+    .promo-item .big { font-family: 'Clash Display', sans-serif; font-size: 2.5rem; font-weight: 700; }
+    .promo-item small { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--ink); color: rgba(245,240,232,0.6); padding: 60px 80px 30px; }
+    .footer-brand { font-family: 'Clash Display', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--cream); margin-bottom: 10px; }
+    .footer-brand span { color: var(--accent); }
+    .footer-desc { font-size: 0.9rem; max-width: 280px; line-height: 1.7; margin-bottom: 24px; }
+    .footer-title { font-family: 'Clash Display', sans-serif; color: var(--cream); font-size: 1rem; margin-bottom: 16px; }
+    .footer-link { color: rgba(245,240,232,0.5); text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 8px; transition: color .2s; }
+    .footer-link:hover { color: var(--cream); }
+    .footer-bottom { border-top: 1px solid rgba(245,240,232,0.1); margin-top: 40px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 992px) {
+      .hero { grid-template-columns: 1fr; padding: 60px 30px; text-align: center; }
+      .hero-image-side { display: none; }
+      .hero-cta { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .section-pad { padding: 60px 30px; }
+      .promo-banner { grid-template-columns: 1fr; padding: 60px 30px; }
+      footer { padding: 60px 30px 30px; }
+      .footer-bottom { flex-direction: column; gap: 12px; }
+    }
+    @media (max-width: 576px) {
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .product-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Shop<span>Ease</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <i class="bi bi-list text-white fs-4"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto gap-2">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Deals</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-3">
+        <a href="#" class="text-white text-decoration-none"><i class="bi bi-search fs-5"></i></a>
+        <a href="#" class="text-white text-decoration-none"><i class="bi bi-person fs-5"></i></a>
+        <button class="cart-btn"><i class="bi bi-bag2"></i> Cart <span class="badge bg-white text-danger ms-1">3</span></button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-tag">🔥 New Season Arrivals</span>
+    <h1 class="hero-title">Shop<br/>Smarter,<br/>Live <em>Better.</em></h1>
+    <p class="hero-sub">Discover thousands of products across every category — from electronics to fashion — all in one place with unbeatable prices.</p>
+    <div class="hero-cta">
+      <a href="#products" class="btn-primary-custom">Shop Now →</a>
+      <a href="#categories" class="btn-outline-custom">Browse Categories</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">50K+</div>
+        <div class="stat-label">Products</div>
+      </div>
+      <div>
+        <div class="stat-num">200K+</div>
+        <div class="stat-label">Customers</div>
+      </div>
+      <div>
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Rating</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-image-side">
+    <div class="hero-img-card">
+      <div class="hero-product-img">🎧</div>
+      <h3>Noise-Cancel Pro Max</h3>
+      <div class="price">₹4,999</div>
+      <a href="#" class="btn-primary-custom w-100 text-center">Add to Cart</a>
+    </div>
+    <div class="floating-badge top">🚀 Free Delivery</div>
+    <div class="floating-badge bottom">⭐ 4.9 Rating</div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section-pad" id="categories">
+  <h2 class="section-title">Shop by Category</h2>
+  <p class="section-sub">Everything you need, organised for you</p>
+  <div class="cat-grid">
+    <div class="cat-card"><div class="cat-icon">📱</div><h5>Electronics</h5><small>2,400+ items</small></div>
+    <div class="cat-card"><div class="cat-icon">👗</div><h5>Fashion</h5><small>8,200+ items</small></div>
+    <div class="cat-card"><div class="cat-icon">🏠</div><h5>Home & Living</h5><small>3,100+ items</small></div>
+    <div class="cat-card"><div class="cat-icon">💄</div><h5>Beauty</h5><small>1,800+ items</small></div>
+    <div class="cat-card"><div class="cat-icon">⚽</div><h5>Sports</h5><small>1,500+ items</small></div>
+    <div class="cat-card"><div class="cat-icon">📚</div><h5>Books</h5><small>5,600+ items</small></div>
+    <div class="cat-card"><div class="cat-icon">🧸</div><h5>Toys & Kids</h5><small>900+ items</small></div>
+    <div class="cat-card"><div class="cat-icon">🍳</div><h5>Kitchen</h5><small>2,200+ items</small></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section-pad products-section" id="products">
+  <h2 class="section-title">Featured Products</h2>
+  <p class="section-sub">Handpicked just for you</p>
+  <div class="filter-bar">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Electronics</button>
+    <button class="filter-btn">Fashion</button>
+    <button class="filter-btn">Home</button>
+    <button class="filter-btn">Beauty</button>
+    <button class="filter-btn">Sports</button>
+  </div>
+  <div class="product-grid">
+    <!-- Product 1 -->
+    <div class="product-card">
+      <div class="product-img">🎧<span class="badge-new">New</span><button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">Sony</div>
+        <div class="product-name">WH-1000XM5 Headphones</div>
+        <div class="product-rating">★★★★★ <span style="color:#aaa;">(248)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹28,990</div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Product 2 -->
+    <div class="product-card">
+      <div class="product-img">👟<span class="badge-sale">−30%</span><button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">Nike</div>
+        <div class="product-name">Air Max 2024 Runner</div>
+        <div class="product-rating">★★★★☆ <span style="color:#aaa;">(184)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹5,599 <span class="old">₹7,999</span></div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Product 3 -->
+    <div class="product-card">
+      <div class="product-img">⌚<span class="badge-new">New</span><button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">Apple</div>
+        <div class="product-name">Apple Watch Series 10</div>
+        <div class="product-rating">★★★★★ <span style="color:#aaa;">(512)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹44,900</div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Product 4 -->
+    <div class="product-card">
+      <div class="product-img">📷<button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">Canon</div>
+        <div class="product-name">EOS R50 Mirrorless Camera</div>
+        <div class="product-rating">★★★★★ <span style="color:#aaa;">(97)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹62,499</div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Product 5 -->
+    <div class="product-card">
+      <div class="product-img">💻<span class="badge-sale">−15%</span><button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">Dell</div>
+        <div class="product-name">XPS 15 Laptop (2024)</div>
+        <div class="product-rating">★★★★☆ <span style="color:#aaa;">(203)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹1,04,990 <span class="old">₹1,24,990</span></div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Product 6 -->
+    <div class="product-card">
+      <div class="product-img">🕶️<button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">Ray-Ban</div>
+        <div class="product-name">Aviator Classic Gold</div>
+        <div class="product-rating">★★★★★ <span style="color:#aaa;">(345)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹8,200</div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Product 7 -->
+    <div class="product-card">
+      <div class="product-img">🎮<span class="badge-new">Hot</span><button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">PlayStation</div>
+        <div class="product-name">DualSense Controller</div>
+        <div class="product-rating">★★★★★ <span style="color:#aaa;">(672)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹5,990</div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Product 8 -->
+    <div class="product-card">
+      <div class="product-img">🏋️<span class="badge-sale">−25%</span><button class="wishlist-btn">♡</button></div>
+      <div class="product-info">
+        <div class="product-brand">Adidas</div>
+        <div class="product-name">Ultraboost 24 Running</div>
+        <div class="product-rating">★★★★☆ <span style="color:#aaa;">(128)</span></div>
+        <div class="product-footer">
+          <div class="product-price">₹9,749 <span class="old">₹12,999</span></div>
+          <button class="add-btn"><i class="bi bi-plus"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mt-5">
+    <a href="#" class="btn-primary-custom">Load More Products</a>
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<section class="promo-banner">
+  <div>
+    <h2>Summer Sale.<br/>Up to 70% Off.</h2>
+    <p>Limited-time deals on top electronics, fashion & more. Don't miss out — sale ends Sunday midnight.</p>
+    <a href="#" class="btn-white">Shop the Sale →</a>
+  </div>
+  <div class="promo-right">
+    <div class="promo-item">
+      <div class="big">24</div>
+      <small>Hours Left</small>
+    </div>
+    <div class="promo-item">
+      <div class="big">70%</div>
+      <small>Max Discount</small>
+    </div>
+    <div class="promo-item">
+      <div class="big">500+</div>
+      <small>Sale Items</small>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="footer-brand">Shop<span>Ease</span></div>
+      <p class="footer-desc">Your one-stop destination for quality products at unbeatable prices. Backed by Spring Boot REST APIs.</p>
+      <div class="d-flex gap-3">
+        <a href="#" class="text-white fs-5"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="text-white fs-5"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" class="text-white fs-5"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="text-white fs-5"><i class="bi bi-youtube"></i></a>
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <div class="footer-title">Shop</div>
+      <a href="#" class="footer-link">New Arrivals</a>
+      <a href="#" class="footer-link">Best Sellers</a>
+      <a href="#" class="footer-link">Today's Deals</a>
+      <a href="#" class="footer-link">Gift Cards</a>
+    </div>
+    <div class="col-lg-2">
+      <div class="footer-title">Help</div>
+      <a href="#" class="footer-link">Track Order</a>
+      <a href="#" class="footer-link">Returns</a>
+      <a href="#" class="footer-link">Shipping</a>
+      <a href="#" class="footer-link">Contact Us</a>
+    </div>
+    <div class="col-lg-4">
+      <div class="footer-title">Stay Updated</div>
+      <p style="font-size:0.9rem; margin-bottom:16px;">Subscribe for exclusive deals & new arrivals.</p>
+      <div class="d-flex gap-2">
+        <input type="email" placeholder="Your email" class="form-control" style="background:#1a1a1a; border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:50px; padding: 10px 20px;"/>
+        <button class="cart-btn">Subscribe</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 ShopEase. All rights reserved.</span>
+    <span>Built with HTML, Bootstrap & Spring Boot</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Filter buttons interaction
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  // Wishlist toggle
+  document.querySelectorAll('.wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.textContent = btn.textContent === '♡' ? '♥' : '♡';
+      btn.style.color = btn.textContent === '♥' ? '#e84c1e' : '';
+    });
+  });
+  // Add to cart feedback
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.style.background = '#22a86b';
+      btn.innerHTML = '<i class="bi bi-check"></i>';
+      setTimeout(() => {
+        btn.style.background = '';
+        btn.innerHTML = '<i class="bi bi-plus"></i>';
+      }, 1200);
+    });
+  });
+</script>
+</body>
+</html>
